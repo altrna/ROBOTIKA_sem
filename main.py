@@ -4,18 +4,30 @@ import numpy as np
 sys.path.append("/bluebot/data/Pyrocon")
 from CRS_commander import Commander
 from robCRSgripper import robCRSgripper
+from robCRSdkt import robCRSdkt
+from robCRSikt import robCRSikt
 from robotCRS import robCRS97
 
 robot = robCRS97()
 cmd = Commander(robot)
 cmd.open_comm("/dev/ttyUSB0", speed=19200)
 cmd.init()
-p_deg = np.array([0,-45,-45, 0, 0, 0])
+
+p_deg = np.array([0, 0, 0, 0, 0, 0])
+#coords = robCRSdkt(robot, p_deg)
+#angles_back = robCRSikt(robot, coords)
+#print(angles_back, np.shape(angles_back), "coords: ", coords)
 p_irc = cmd.anglestoirc(p_deg)
 cmd.coordmv(p_irc)
+"""p_irc = cmd.anglestoirc(p_deg)
+
+cmd.coordmv(p_irc)
+
 t, a = cmd.axis_get_pos()
 print(a, cmd.irctoangles(a))
-
+cmd.soft_home()
+cmd.rcon.close()
+"""
 """{
 import argparse
 import numpy as np
