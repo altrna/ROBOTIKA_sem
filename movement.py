@@ -58,10 +58,10 @@ if __name__ == "__main__":
 	rotations = []
 	cam_r = []
 	cam_t = []
-	random_configs = [np.random.randint(0, 40, (3,)) for i in range(10)]
-	for x in range(450,651, 100):
+	random_configs = [np.random.randint(-25, 25, (3,)) for i in range(10)]
+	for x in range(450,651, 50):
 		for y in range (-190, -0, 50):
-			for z in range(500, 600, 40):
+			for z in range(500, 600, 20):
 				cmd.wait_ready()
 				this_config = np.random.randint(0, len(random_configs))
 				pos = np.array([x, y, z, *random_configs[this_config]])
