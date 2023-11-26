@@ -52,7 +52,8 @@ class robCRS:
         self.L2 = 12 * inch2mm  # J2-J3
         self.L3 = 13 * inch2mm  # J3-J5
         self.L4 = 3 * inch2mm  # J5-flange
-        self.L5 = inch2mm * (3.78 + 0.5)  # gripper length
+        self.L5 = inch2mm * (3.78 + 0.5)  # 
+ length
         self.L6 = inch2mm * 1  # gripper finger length
 
         # Posible change of coordinate direction
