@@ -54,9 +54,13 @@ if __name__ == "__main__":
 	cmd.open_comm("/dev/ttyUSB0")
 	cmd.init()
 	prev_irc = None
-	for x in range(450,651, 20):
-		for y in range (-190, -0, 20):
-			for z in range(500, 600, 20):
+	positions = []
+	rotations = []
+	cam_r = []
+	cam_t = []
+	for x in range(450,651, 100):
+		for y in range (-190, -0, 50):
+			for z in range(500, 600, 40):
 				cmd.wait_ready()
 				pos = np.array([x, y, z, 0,0,0])
 				print(pos)
@@ -76,17 +80,18 @@ if __name__ == "__main__":
 				pos_in_deg = cmd.irctoangles(pos)
 				dkt_pos = robCRSdkt(robot, pos_in_deg)
 				if t_vec is not None and r_vec is not None:
-					with open('dkt_file.npy', 'ab') as dkt_file:
-						print("dktfile extended")
-						np.save(dkt_file, dkt_pos)
-					with open('cam_file.npy', 'ab') as cam_file:
-						print("camfile extended")
-						np.save(cam_file, np.array([t_vec, r_vec]))
+					positions.append(dkt_pos[:3])
+					rotations.append(dkt_pos[-3:])
+					cam_r.append(r_vec)
+					cam_t.append(t_vec)
 				print("Robot: ", dkt_pos,pos)
 				print("Camera: ", t_vec, r_vec)
 				print("-------------------------------")
 				prev_irc = irc
-	
+	np.savez("post.npz", positions)
+	np.savez("posr.npz", rotations)
+	np.savez("cam_r_vec.npz", cam_r)
+	np.savez("cam_t_vec.npz", cam_t)
 	#desired_position_angles = robCRSikt(robot, t_pose)
 	#desired_position_irc = cmd.anglestoirc(p_deg)
 	#cmd.coordmv(desired_position_irc)
