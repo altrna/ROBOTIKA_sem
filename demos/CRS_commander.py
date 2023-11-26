@@ -394,6 +394,7 @@ class Commander:
             resp = np.array(map(int,resp.split(',')))
         except:
             print('Error responce', resp)
+        print(resp)
         t = resp[0]
         pos = resp[-6:]
         return t, pos
@@ -468,7 +469,7 @@ class Commander:
         a = self.robot.ikt(self.robot, pos)
         num = None
         min_dist = float('Inf')
-
+        print("počet konfigurací ikt:", len(a))	
         if hasattr(self.robot, 'shdeg'):
             prev_pos = self.anglestoirc(np.array(self.robot.shdeg)) if prev_pos is None else prev_pos
         else:
