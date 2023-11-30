@@ -40,7 +40,7 @@ X, Y, U, V = cv2.calibrateRobotWorldHandEye(
 # print(X[1]) 
 np.savez("Cam_R.npz", U)
 np.savez("Cam_T.npz", V)
-print(X[2]) 
-print(X[3]) 
+print(U) 
+print(V) 
 pass
 # print(Y)
