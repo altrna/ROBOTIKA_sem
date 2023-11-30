@@ -22,7 +22,7 @@ pos_r = [
 ]
 pos_t = [i.flatten() for i in np.load("post.npz", allow_pickle=True)["arr_0"]]
 
-cam_t = [1000 * i.flatten() for i in np.load("cam_t_vec.npz", allow_pickle=True)["arr_0"]]
+cam_t = [i.flatten() for i in np.load("cam_t_vec.npz", allow_pickle=True)["arr_0"]]
 
 # pos_r = [np.deg2rad(i.flatten()) for i in np.load("posr.npz", allow_pickle=True)["arr_0"]]
 cam_r = [i.flatten() for i in np.load("cam_r_vec.npz", allow_pickle=True)["arr_0"]]
