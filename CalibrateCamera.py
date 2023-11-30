@@ -10,13 +10,14 @@ import glob
 
 
 # ChAruco board variables
-CHARUCOBOARD_ROWCOUNT = 7
-CHARUCOBOARD_COLCOUNT = 5
+CHARUCOBOARD_ROWCOUNT = 5
+CHARUCOBOARD_COLCOUNT = 7
 ARUCO_DICT = aruco.getPredefinedDictionary(aruco.DICT_6X6_1000)
 
 # Create constants to be passed into OpenCV and Aruco methods
-CHARUCO_BOARD = aruco.CharucoBoard(
-    (CHARUCOBOARD_COLCOUNT, CHARUCOBOARD_ROWCOUNT),
+CHARUCO_BOARD = aruco.CharucoBoard_create(
+    CHARUCOBOARD_COLCOUNT,
+    CHARUCOBOARD_ROWCOUNT,
     squareLength=0.035,
     markerLength=0.026,
     dictionary=ARUCO_DICT,
@@ -32,15 +33,17 @@ image_size = None  # Determined at runtime
 # I'm using a set of images taken with the camera with the naming convention:
 # 'camera-pic-of-charucoboard-<NUMBER>.jpg'
 # All images used should be the same size, which if taken with the same camera shouldn't be a problem
-images = glob.glob("./images*")
+images = glob.glob("./images/*.png")
 
 # Loop through images glob'ed
 for iname in images:
+    print(100000000000)
     # Open the image
     img = cv2.imread(iname)
+    print(100000000000)
     # Grayscale the image
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
+    print(100000000000)
     # Find aruco markers in the query image
     corners, ids, _ = aruco.detectMarkers(image=gray, dictionary=ARUCO_DICT)
 

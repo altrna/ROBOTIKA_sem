@@ -24,20 +24,23 @@ def get_single_cube_pose(camera, camera_matrix, distortion_matrix):
 
 
 	rgb_cv_image = np.array(image.getData(), dtype="uint8").reshape((image.getRows(), image.getCols(), 3))
+	 
 	gray_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_BGR2GRAY)
 	ret, thresh = cv2.threshold(gray_cv_image, 80, 255, 0)
 
 	corners, ids, rejected_im_points = cv2.aruco.detectMarkers(thresh, aruco_dict,parameters = params)
-	rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
+	#rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
 
 	r_vec, t_vec= cv2.aruco.estimatePoseSingleMarkers(corners, 39, camera_matrix, distortion_matrix)
 	cv2.imshow('frame',rgb_cv_image)
-	return r_vec, t_vec
+	return r_vec, t_vec, rgb_cv_image
 
 if __name__ == "__main__":
-	cam_matrix = np.array([[  2.22780761e+03,   0.00000000e+00 ,  6.79803570e+02], [  0.00000000e+00, 2.23516942e+03, 4.69847972e+02], [  0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+	cam_matrix = np.array([[  2.10813831e+03, 0.00000000e+00,   6.49912597e+02],
+ [  0.00000000e+00,   2.11337088e+03,   3.45497271e+02],
+ [  0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
 
-	dist_matrix = np.array([-0.07772019 , 0.27231058 , 0.00259939 , 0.00127269 ,-0.94383607])
+	dist_matrix = np.array([ -6.60263309e-02, -4.23421181e-01,  -1.32225502e-02,   1.26508906e-03, 2.59213104e+00])
 	bus = PyCapture2.BusManager()
 	camera = PyCapture2.Camera()
 
@@ -46,13 +49,14 @@ if __name__ == "__main__":
 
 	# Start capture
 	camera.startCapture()
-	r_vec, t_vec = get_single_cube_pose(camera, cam_matrix, dist_matrix)
+	r_vec, t_vec, img4 = get_single_cube_pose(camera, cam_matrix, dist_matrix)
 	#T_RC = SE3(translation=[520, -75, 1250], rotation=SO3.ry(np.pi))
 	#t_pose = T_RC.act(t_vec)
 	robot = robCRS97()
 	cmd = Commander(robot)
 	cmd.open_comm("/dev/ttyUSB0")
 	cmd.init()
+	robCRSgripper(cmd, 0.025)
 	prev_irc = None
 	positions = []
 	rotations = []
@@ -77,15 +81,17 @@ if __name__ == "__main__":
 				else:
 	 				continue
 				time.sleep(5)
-				r_vec, t_vec = get_single_cube_pose(camera, cam_matrix, dist_matrix)
+				r_vec, t_vec, img44 = get_single_cube_pose(camera, cam_matrix, dist_matrix)
 				t, pos = cmd.axis_get_pos()
 				pos_in_deg = cmd.irctoangles(pos)
 				dkt_pos = robCRSdkt(robot, pos_in_deg)
 				if t_vec is not None and r_vec is not None:
 					positions.append(dkt_pos[:3])
 					rotations.append(dkt_pos[-3:])
+					cv2.imwrite(f"images/hand2eye/{x}_{y}_{z}.png", img44)
 					cam_r.append(r_vec)
 					cam_t.append(t_vec)
+					
 				print("Robot: ", dkt_pos,pos)
 				print("Camera: ", t_vec, r_vec)
 				print("-------------------------------")
