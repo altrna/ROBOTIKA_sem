@@ -16,17 +16,31 @@ Camera:  [[[ 0.01389302  0.07296657  0.68056817]]] [[[-2.13977189  2.15591813  0
 # t2c_rot = np.asmatrix(t2c_rot.rot)
 # b2r_rot = np.asmatrix(np.eye(3))
 
-pos_r = [np.deg2rad(i.flatten()) for i in np.load("posr.npz", allow_pickle=True)["arr_0"]]
+pos_r = [
+    (SO3.rz(np.deg2rad(i.flatten())[0]) * SO3.ry(np.deg2rad(i.flatten())[1]) * SO3.rx(np.deg2rad(i.flatten())[2])).rot
+    for i in np.load("posr.npz", allow_pickle=True)["arr_0"]
+]
 pos_t = [i.flatten() for i in np.load("post.npz", allow_pickle=True)["arr_0"]]
-cam_r = [i.flatten() for i in np.load("cam_r_vec.npz", allow_pickle=True)["arr_0"]]
+
 cam_t = [1000 * i.flatten() for i in np.load("cam_t_vec.npz", allow_pickle=True)["arr_0"]]
 
-X = cv2.calibrateRobotWorldHandEye(
+# pos_r = [np.deg2rad(i.flatten()) for i in np.load("posr.npz", allow_pickle=True)["arr_0"]]
+cam_r = [i.flatten() for i in np.load("cam_r_vec.npz", allow_pickle=True)["arr_0"]]
+
+for i in range(len(cam_r)):
+    cam_r[i] = SO3.exp(cam_r[i]).rot
+
+X, Y, U, V = cv2.calibrateRobotWorldHandEye(
     pos_r,
     pos_t,
     cam_r,
     cam_t,
 )
-print(X)
+# print(X[0]) 
+# print(X[1]) 
+np.savez("Cam_R.npz", U)
+np.savez("Cam_T.npz", V)
+print(X[2]) 
+print(X[3]) 
 pass
 # print(Y)
