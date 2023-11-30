@@ -8,6 +8,7 @@ from robCRSdkt import robCRSdkt
 from robCRSikt import robCRSikt
 from robotCRS import robCRS97
 from core.se3 import *
+from core.so3 import *
 import PyCapture2
 import cv2
 import time
@@ -35,6 +36,28 @@ def get_single_cube_pose(camera, camera_matrix, distortion_matrix):
 	return r_vec, t_vec
 
 if __name__ == "__main__":
+	rot = np.load("Cam_R.npz")["arr_0"]
+	trans = np.load("Cam_T.npz")["arr_0"].flatten()	
+	base2camera_SE3 = SE3(trans, SO3(rot))
+	cam_matrix = np.array([[  2.22780761e+03,   0.00000000e+00 ,  6.79803570e+02], 		[  0.00000000e+00, 2.23516942e+03, 4.69847972e+02], [  0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+
+	dist_matrix =np.array([-0.07772019 , 0.27231058 , 0.00259939 , 0.00127269 ,-0.94383607])
+	bus = PyCapture2.BusManager()
+	camera = PyCapture2.Camera()
+
+	# Select first camera on the bus
+	camera.connect(bus.getCameraFromIndex(0))
+
+	# Start capture
+	camera.startCapture()
+	r_vec, t_vec = get_single_cube_pose(camera, cam_matrix, dist_matrix)
+	print(r_vec)
+	r_vec_f = r_vec.flatten()
+	camera2cube_SE3 = SE3(t_vec.flatten(), SO3.exp(r_vec_f))
+	print(0)
+	base2cube_SE3 = base2camera_SE3 * camera2cube_SE3 
+	print(base2cube_SE3)
+	"""
 	cam_matrix = np.array([[  2.22780761e+03,   0.00000000e+00 ,  6.79803570e+02], [  0.00000000e+00, 2.23516942e+03, 4.69847972e+02], [  0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
 
 	dist_matrix = np.array([-0.07772019 , 0.27231058 , 0.00259939 , 0.00127269 ,-0.94383607])
@@ -96,6 +119,6 @@ if __name__ == "__main__":
 	np.savez("cam_t_vec.npz", cam_t)
 	#desired_position_angles = robCRSikt(robot, t_pose)
 	#desired_position_irc = cmd.anglestoirc(p_deg)
-	#cmd.coordmv(desired_position_irc)
+	#cmd.coordmv(desired_position_irc)"""
 
   

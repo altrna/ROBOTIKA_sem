@@ -34,31 +34,36 @@ dist_matrix = np.array([-0.07772019 , 0.27231058 , 0.00259939 , 0.00127269 ,-0.9
 
 i = 0
 while True:
-  # Retrieve image from camara in PyCapture2.Image format
-  image = camera.retrieveBuffer()
+	try:
+		# Retrieve image from camara in PyCapture2.Image format
+		image = camera.retrieveBuffer()
 
-  # Convert from MONO8 to RGB8
-  image = image.convert(PyCapture2.PIXEL_FORMAT.RGB8)
-  
-  # Convert image to Numpy array
-  rgb_cv_image = np.array(image.getData(), dtype="uint8").reshape((image.getRows(), image.getCols(), 3))
-  gray_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_BGR2GRAY)
-  ret, thresh = cv2.threshold(gray_cv_image, 80, 255, 0)
-	
-  corners, ids, rejected_im_points = cv2.aruco.detectMarkers(thresh, aruco_dict,parameters = params)
-  rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
-  r_vec, t_vec= cv2.aruco.estimatePoseSingleMarkers(corners, 0.039, cam_matrix, dist_matrix)
+		# Convert from MONO8 to RGB8
+		image = image.convert(PyCapture2.PIXEL_FORMAT.RGB8)
 
-  cv2.aruco.drawAxis(rgb_cv_image, cam_matrix, dist_matrix, r_vec, t_vec, 0.039)
-  print("rvec = ", r_vec)
-  print("______")
-  # Convert RGB image to BGR image to be shown by OpenCV
-  bgr_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_RGB2BGR)
+		# Convert image to Numpy array
+		rgb_cv_image = np.array(image.getData(), dtype="uint8").reshape((image.getRows(), image.getCols(), 3))
+		gray_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_BGR2GRAY)
+		ret, thresh = cv2.threshold(gray_cv_image, 80, 255, 0)
 
-  # Show image
-  cv2.imshow('frame',bgr_cv_image)
+		corners, ids, rejected_im_points = cv2.aruco.detectMarkers(thresh, aruco_dict,parameters = params)
+		rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
+		r_vec, t_vec= cv2.aruco.estimatePoseSingleMarkers(corners, 0.039, cam_matrix, dist_matrix)
 
-  # Wait for key press, stop if the key is q
-  if cv2.waitKey(1) & 0xFF == ord('q'):
-      cv2.imwrite(f"images/{i}.jpg", bgr_cv_image) 
-      i += 1
+		cv2.aruco.drawAxis(rgb_cv_image, cam_matrix, dist_matrix, r_vec, t_vec, 0.039)
+		print("rvec = ", np.rad2deg(r_vec))
+		print("tvec = ", 1000 * t_vec)
+		print("______")
+		# Convert RGB image to BGR image to be shown by OpenCV
+		bgr_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_RGB2BGR)
+
+		# Show image
+		cv2.imshow('frame',bgr_cv_image)
+
+		# Wait for key press, stop if the key is q
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+		  cv2.imwrite(f"images/{i}.jpg", bgr_cv_image) 
+		  i += 1
+	except:
+		print("Fail")
+		continue
