@@ -30,21 +30,6 @@ twodpoints = []
 
 [[-0.07772019  0.27231058  0.00259939  0.00127269 -0.94383607]]
 
-20x 20 mm 8x12 jpg
-[[  1.62590729e+04   0.00000000e+00   6.47834867e+02]
- [  0.00000000e+00   1.62476841e+04   3.16185817e+02]
- [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
-dist_matrix = np.array([-5.20755217e+00,   2.09653313e+02,  -7.88726235e-03,  -1.37607570e-01,
-   -3.27764473e+00])
-
-20x 10mm 17x25 bmp
-[[  1.47970904e+04   0.00000000e+00   8.02708012e+02]
- [  0.00000000e+00   1.48539513e+04   3.83738477e+02]
- [  0.00000000e+00   0.00000000e+00   1.00000000e+00]]
-[ -4.21304618e+00   4.23254102e+02   1.83874158e-02  -8.35195764e-02
-    2.57509132e+00]
-
-
 """
 
 # 3D points real world coordinates 
@@ -105,7 +90,8 @@ h, w = image.shape[:2]
 # and its corresponding pixel coordinates of the 
 # detected corners (twodpoints) 
 ret, matrix, distortion, r_vecs, t_vecs = cv2.calibrateCamera( 
-	threedpoints, twodpoints, grayColor.shape[::-1], None, None) 
+	threedpoints, twodpoints, grayColor.shape[::-1], None, None)
+cv2.aruco.calibrateCameraCharuco()
 
 
 # Displaying required output 
