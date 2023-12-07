@@ -37,13 +37,10 @@ images = glob.glob("./images/*.png")
 
 # Loop through images glob'ed
 for iname in images:
-    print(100000000000)
     # Open the image
     img = cv2.imread(iname)
-    print(100000000000)
     # Grayscale the image
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    print(100000000000)
     # Find aruco markers in the query image
     corners, ids, _ = aruco.detectMarkers(image=gray, dictionary=ARUCO_DICT)
 
