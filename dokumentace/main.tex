@@ -1,0 +1,57 @@
+\documentclass[journal,twoside,web]{ieeecolor}
+\usepackage{generic}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{lipsum} 
+%\usepackage[english, czech]{babel}
+%\usepackage[useregional]{datetime2}
+%\DTMsetdatestyle{czech}
+\usepackage[ddmmyyyy]{datetime}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\markboth{ČESKÉ VYSOKÉ UČENÍ TECHNICKÉ V PRAZE, FAKULTA ELEKTROTECHNICKÁ, KATEDRA KYBERNETIKY, \today}
+{ČESKÉ VYSOKÉ UČENÍ TECHNICKÉ V PRAZE, FAKULTA ELEKTROTECHNICKÁ, KATEDRA KYBERNETIKY, \today}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Semestrální úloha z předmětu Robotika},
+    pdfpagemode=FullScreen,
+    }
+\begin{document}
+\title{Parkování robota v garáži}
+\author{Aleš Trna, Minh Hoang Tran \\ \begin{center}
+    \today
+\end{center}
+\thanks{}}
+
+\maketitle
+
+\begin{abstract}
+    Předmětem této práce je popis řešení závěrečné semestrální úlohy z předmětu Robotika.
+\end{abstract}
+
+\begin{IEEEkeywords}
+    Robot, manipulátor, 
+    \end{IEEEkeywords}
+
+\section{Zadání úlohy}
+    V pracovním prostoru robota CRS97 jsou rozmístěny kostky o konstantní velikosti označené značkami typu \textit{Aruco}.
+    Robot je umístěn v kleci, která vymezuje jeho pracovní prostor. Ke kleci je na konstantním místě připevněna kamera, která zabírá
+    stále stejnou scénu, ale ze zadání neznáme její přesnou pozici. Naším úkolem je roztřídit Kostky s \textit{Aruco} značkami tak, aby
+    kostky označené stejnými značkami byly uloženy na stejném místě.
+
+\section{Měření a kalibrace kamery}
+\subsection{Kalibrace kamery}
+    Jako první musíme provést kalibraci kamery, Díky které 
+\subsection{Hand to Eye kalibrace}
+\end{document}
