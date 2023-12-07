@@ -49,11 +49,13 @@ while True:
 		corners, ids, rejected_im_points = cv2.aruco.detectMarkers(thresh, aruco_dict,parameters = params)
 		rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
 		r_vec, t_vec= cv2.aruco.estimatePoseSingleMarkers(corners, 0.039, cam_matrix, dist_matrix)
-
-		cv2.aruco.drawAxis(rgb_cv_image, cam_matrix, dist_matrix, r_vec, t_vec, 0.039)
-		print("rvec = ", np.rad2deg(r_vec))
+		
+		print("rvec = ", np.shape(r_vec))
 		print("tvec = ", 1000 * t_vec)
 		print("______")
+		for i in np.shape(r_vec)[0]:
+			#cv2.aruco.drawAxis(rgb_cv_image, cam_matrix, dist_matrix, r_vec[i], t_vec[i], 0.039)
+			pass
 		# Convert RGB image to BGR image to be shown by OpenCV
 		bgr_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_RGB2BGR)
 
