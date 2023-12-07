@@ -58,17 +58,17 @@ if __name__ == "__main__":
 	rotations = []
 	cam_r = []
 	cam_t = []
-
-	pos = np.array([400, -100, 550, 0,0,0])
+	phi_z = 0
+	pos = np.array([500, 0, 500, 0, 0 ,phi_z])
 	irc = None
 	try:
 		irc = cmd.find_closest_ikt(pos)
 	except:
-		print(len(robCRSikt(robot, pos)))
+		pass
 	if irc is not None:
 		cmd.coordmv(irc)
-	else:
-		continue
+
+
 	#desired_position_angles = robCRSikt(robot, t_pose)
 	#desired_position_irc = cmd.anglestoirc(p_deg)
 	#cmd.coordmv(desired_position_irc)
