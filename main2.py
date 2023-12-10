@@ -86,6 +86,26 @@ def pick_up(cmd, cube_se3):
     move_to_pos(cmd, des_pos)
     print(des_pos)
 
+def sort_layers(all_arucos):
+	layer_dict = dict()
+	for i in range(len(all_arucos)):
+		cl = all_arucos[i].layer
+		if cl in layer_dict:
+			layer_dict[cl] = [all_arucos[i]]
+		else:
+			layer_dict[cl].append(all_arucos[i])
+	return layer_dict
+
+def main_init(cmd, camera, cam_matrix, dist_matrix, base2cam):
+	
+
+	pass
+
+def main_logic():
+	
+	pass
+
+
 
 if __name__ == "__main__":
     robot = robCRS97()
