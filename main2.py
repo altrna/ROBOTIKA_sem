@@ -11,7 +11,23 @@ from core.so3 import *
 import PyCapture2
 import cv2
 
-def get_cubes_pose(camera, camera_matrix, distortion_matrix, base2cam):
+
+class Aruco:
+	def __init__(self, SE3, aruco_id):
+		self.SE3 = SE3
+		self.id = aruco_id
+		self.layer = self.get_layer()	
+
+	def get_layer(self):
+		return np.clip((self.SE3.translation[2]-5)//50, -1, 5)
+
+	def is_grabbable(self, all_arucos):
+		...
+		self.grabbable = ...
+	def __repr__(self):
+		return "Layer: " + str(self.layer) + "\nSE3: " + self.SE3.__repr__() + "\nID: " + str(self.id)
+
+def get_arucos_pose(camera, camera_matrix, distortion_matrix, base2cam):
 	aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
 	params = cv2.aruco.DetectorParameters_create()
 	image = camera.retrieveBuffer()
@@ -23,45 +39,51 @@ def get_cubes_pose(camera, camera_matrix, distortion_matrix, base2cam):
 	ret, thresh = cv2.threshold(gray_cv_image, 80, 255, 0)
 
 	corners, ids, rejected_im_points = cv2.aruco.detectMarkers(thresh, aruco_dict,parameters = params)
-	r_vec, t_vec= cv2.aruco.estimatePoseSingleMarkers(corners, 39, camera_matrix, distortion_matrix)
+	r_vec, t_vec = cv2.aruco.estimatePoseSingleMarkers(corners, 39, camera_matrix, distortion_matrix)
 	l = np.shape(r_vec)[0]
-	all_se3s = []
+	arucos = []
 	for i in range(l):
 		cam2aruco = SE3(t_vec[i].flatten(), SO3.exp(r_vec[i].flatten()))
-		all_se3s.append(base2cam*cam2aruco)
-	return all_se3s
+		base2aruco = base2cam*cam2aruco
+		arucos.append(Aruco(base2aruco, ids[i]))
+	return arucos
 
 def move_to_pos(cmd, des_pos):
 	try:
 		irc = cmd.find_closest_ikt(des_pos)
-	except:
-		irc = None
-	if irc is not None:
 		cmd.wait_ready()
 		cmd.coordmv(irc)
 		cmd.wait_ready()
-	else:
+		return True
+	except:
+		irc = None
 		print("ERROR: No IKT!")
-		cmd.init()
+		return False
 
-def release(cmd):
-	robCRSgripper(cmd, 0)
+def release(cmd, val=-1):
+	robCRSgripper(cmd, val)
 
 def pick_up(cmd, cube_se3):
-	robCRSgripper(cmd, 0)
+	release(cmd, val=-1.5)
 	cube_se3.translation[0:2] += [20,-8]
 	cube_se3.translation[2] = 100
 	yaw = np.arctan2(cube_se3.rotation.rot[1,0], cube_se3.rotation.rot[0,0])
 	des_pos = [*cube_se3.translation, np.rad2deg(yaw), 90, 0]
 	print(des_pos)
-	move_to_pos(cmd, des_pos)
-
+	cont = move_to_pos(cmd, des_pos)
+	if not cont:
+		return
 	des_pos[2] = 50
 	print(des_pos)
-	move_to_pos(cmd, des_pos)
-	robCRSgripper(cmd, 0.028)
+	cont = move_to_pos(cmd, des_pos)
+	if not cont:
+		return
+	robCRSgripper(cmd, 0.1)
+	cmd.wait_gripper_ready()
 	des_pos[2] = 200
-	move_to_pos(cmd, des_pos)
+	cont = move_to_pos(cmd, des_pos)
+	if not cont:
+		return
 	print(des_pos)
 
 if __name__ == "__main__":
@@ -88,10 +110,12 @@ if __name__ == "__main__":
 	camt = np.load("Cam_T.npz")["arr_0"].flatten()
 	print(camr, camt)
 	base2cam = SE3(camt, SO3(camr))
-	cp = get_cubes_pose(camera, cam_matrix, dist_matrix, base2cam)
+	cp = get_arucos_pose(camera, cam_matrix, dist_matrix, base2cam)
 	for i in range(len(cp)):
-		pick_up(cmd, cp[i])
-		move_to_pos(cmd, [400, -150, 150, 0, 90, 0])
+		#print(cp[i])
+		print(cp[i])
+		#pick_up(cmd, cp[i])
+		#move_to_pos(cmd, [0, -400, 150, 0, 90, 0])
 		release(cmd)
 	
 	
