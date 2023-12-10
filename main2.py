@@ -19,7 +19,7 @@ class Aruco:
 		self.layer = self.get_layer()	
 
 	def get_layer(self):
-		return np.clip((self.SE3.translation[2]-5)//50, -1, 5)
+		return np.clip((self.SE3.translation[2]-10)//50, -1, 5)
 
 	def is_grabbable(self, all_arucos):
 		...
@@ -103,8 +103,13 @@ if __name__ == "__main__":
 	cam_matrix = np.array([[  2.10813831e+03, 0.00000000e+00,   6.49912597e+02],
  [  0.00000000e+00,   2.11337088e+03,   3.45497271e+02],
  [  0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
+	"""[[  2.31616457e+03   0.00000000e+00   6.31242571e+02]
+ 	[  0.00000000e+00   2.34163983e+03   2.40442592e+02]
+ 	[  0.00000000e+00   0.00000000e+00   1.00000000e+00]]"""
 
 	dist_matrix = np.array([ -6.60263309e-02, -4.23421181e-01,  -1.32225502e-02,   1.26508906e-03, 2.59213104e+00])
+	dist_matrix = np.array([  1.31600325e-01 , -2.13500794e+00 , -3.13652860e-02,   1.69360473e-03,
+    9.34997291e+00])# new matrix images/charuco2
 	aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
 	camr = np.load("Cam_R.npz")["arr_0"]
 	camt = np.load("Cam_T.npz")["arr_0"].flatten()
