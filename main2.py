@@ -21,7 +21,7 @@ class Aruco:
 		
 
 	def get_layer(self):
-		return int(np.clip((self.SE3.translation[2] - 10) // 50, -1, 5))
+		return int(np.clip((self.SE3.translation[2] - 11) // 50, -1, 5))
 	
 	def grab_angle(self, angle):
 		self.angle = angle
@@ -36,7 +36,7 @@ class Aruco:
 def get_distance_from_other_arucos_in_layer(all_arucos_in_layer):
 	def get_distance_matrix(a):
 		return np.sqrt(np.sum(np.square(a[:, np.newaxis, :] - a[np.newaxis, :, :]), axis=-1))
-	all_centres = np.array([x.SE3.translation for x in all_arucos_in_layer])
+	all_centres = np.array([x.SE3.translation[:2] for x in all_arucos_in_layer])
 	dist_mat = get_distance_matrix(all_centres)
 	print(dist_mat)
 	return dist_mat
@@ -60,6 +60,7 @@ def get_arucos_pose(camera, camera_matrix, distortion_matrix, base2cam):
         cam2aruco = SE3(t_vec[i].flatten(), SO3.exp(r_vec[i].flatten()))
         base2aruco = base2cam * cam2aruco
         arucos.append(Aruco(base2aruco, ids[i][0]))
+        print(arucos[i])
     return arucos
 
 
@@ -85,12 +86,12 @@ def grip(cmd):
 	robCRSgripper(cmd, 0.1)
 	cmd.wait_gripper_ready()
 
-def pick_up(cmd, cube_se3, layer, max_layer):
+def pick_up(cmd, cube, layer, max_layer):
 	release(cmd)
-	cube_se3.translation[0:2] += [20, -8]
-	cube_se3.translation[2] = 50 * (layer + 2)
-	yaw = np.arctan2(cube_se3.rotation.rot[1, 0], cube_se3.rotation.rot[0, 0])
-	des_pos = [*cube_se3.translation, np.rad2deg(yaw), 90, 0]
+	cube.SE3.translation[0:2] += [20, -15]
+	cube.SE3.translation[2] = 50 * (layer + 2)
+	yaw = cube.angle
+	des_pos = [*cube.SE3.translation, yaw, 90, 0]
 	print(des_pos)
 	move_to_pos(cmd, des_pos)
 	des_pos[2] = 50 * (layer + 1)
@@ -145,19 +146,26 @@ def get_cube_from_layer(all_arucos_in_layer):
 	layer_distance_matrix = get_distance_from_other_arucos_in_layer(all_arucos_in_layer)
 	idx_mask_sum = np.sum(layer_distance_matrix <= 60, axis=0)
 	for i in range(len(idx_mask_sum)):
-		if idx_mask_sum[i] > 1:
+		if idx_mask_sum[i] > 2:
+			all_arucos_in_layer[i].grab_angle(None)
+			#TODO nemozna reseni
 			continue
 		closest_aruco = all_arucos_in_layer[np.argsort(layer_distance_matrix[i])[1]]
 		current_aruco = all_arucos_in_layer[i]
-		transformation = (current_aruco.SE3.inv() * closest_aruco.SE3).transformation[:2]
-		print(np.arctan(transformation[1], transformation[0])
+		translation = (current_aruco.SE3.inverse() * closest_aruco.SE3).translation[:2]
+		x_vec = np.array([1,0])
+		t_0 = translation/(np.linalg.norm(translation))
+		dot_product=np.dot(t_0, x_vec)
+		angle = np.rad2deg(np.arctan2(current_aruco.SE3.rotation.rot[1, 0], current_aruco.SE3.rotation.rot[0, 0]))
+		angle += 90 if abs(dot_product)<0.2 else 0
+		print("-------------angle: ", angle)
+		all_arucos_in_layer[i].grab_angle(angle)
 		
 if __name__ == "__main__":
 	robot = robCRS97()
 	cmd = Commander(robot)
 	cmd.open_comm("/dev/ttyUSB0", speed=19200)
 	cmd.init(hard_home=False)
-	# cmd.hard_home()
 	cmd.soft_home()
 	robCRSgripper(cmd, -1)
 	bus = PyCapture2.BusManager()
@@ -180,23 +188,23 @@ if __name__ == "__main__":
 	camt = np.load("Cam_T.npz")["arr_0"].flatten()
 	base2cam = SE3(camt, SO3(camr))
 
-	#sort_dict = main_init(cmd, camera, cam_matrix, dist_matrix, base2cam)
+	sort_dict = main_init(cmd, camera, cam_matrix, dist_matrix, base2cam)
 
 	cp = get_arucos_pose(camera, cam_matrix, dist_matrix, base2cam)
 
-	get_cube_from_layer(cp)
+	
 
 	layer_order, boxrs, sorted_indices = get_layers_in_order(cp)
 	max_layer = sorted_indices[0]
-
+	get_cube_from_layer(layer_order[max_layer])
 
 	for i in sorted_indices:
 
 		for j in layer_order[i]:
-
-			#pick_up(cmd, j.SE3, i, max_layer)
-			#des_pos = [*sort_dict[j.id].SE3.translation, 0, 90, 0]
-		#	des_pos[2] = 250
-			#move_to_pos(cmd, des_pos)
+			#TODO dodelat loop
+			pick_up(cmd, j, i, max_layer)
+			des_pos = [*sort_dict[j.id].SE3.translation, 0, 90, 0]
+			des_pos[2] = 250
+			move_to_pos(cmd, des_pos)
 			release(cmd)
 			pass
