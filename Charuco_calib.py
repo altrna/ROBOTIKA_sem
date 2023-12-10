@@ -33,7 +33,7 @@ image_size = None  # Determined at runtime
 # I'm using a set of images taken with the camera with the naming convention:
 # 'camera-pic-of-charucoboard-<NUMBER>.jpg'
 # All images used should be the same size, which if taken with the same camera shouldn't be a problem
-images = glob.glob("./images/charuco2/*.png")
+images = glob.glob("./images/*.png")
 
 # Loop through images glob'ed
 for iname in images:
