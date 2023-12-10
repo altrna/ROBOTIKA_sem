@@ -40,7 +40,13 @@ if __name__ == "__main__":
  [  0.00000000e+00,   2.11337088e+03,   3.45497271e+02],
  [  0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
 
+    cam_matrix = np.array([[  2.31616457e+03 ,  0.00000000e+00  , 6.31242571e+02],
+ 	[  0.00000000e+00  , 2.34163983e+03 ,  2.40442592e+02],
+ 	[  0.00000000e+00 ,  0.00000000e+00  , 1.00000000e+00]]) #new
+
     dist_matrix = np.array([ -6.60263309e-02, -4.23421181e-01,  -1.32225502e-02,   1.26508906e-03, 2.59213104e+00])
+    dist_matrix = np.array([  1.31600325e-01 , -2.13500794e+00 , -3.13652860e-02,   1.69360473e-03,
+    9.34997291e+00])# new matrix images/charuco2
     bus = PyCapture2.BusManager()
     camera = PyCapture2.Camera()
 
@@ -63,9 +69,9 @@ if __name__ == "__main__":
     cam_r = []
     cam_t = []
     random_configs = [np.random.randint(-25, 25, (3,)) for i in range(10)]
-    for x in range(450,651, 50):
-        for y in range (-190, -0, 50):
-            for z in range(500, 600, 20):
+    for x in range(350, 651, 50):
+        for y in range (-190, 101, 50):
+            for z in range(250, 601, 50):
                 cmd.wait_ready()
                 this_config = np.random.randint(0, len(random_configs))
                 pos = np.array([x, y, z, *random_configs[this_config]])
@@ -80,7 +86,7 @@ if __name__ == "__main__":
                     cmd.coordmv(irc)
                 else:
                      continue
-                time.sleep(5)
+                cmd.wait_ready()
                 r_vec, t_vec, img44 = get_single_cube_pose(camera, cam_matrix, dist_matrix)
                 t, pos = cmd.axis_get_pos()
                 pos_in_deg = cmd.irctoangles(pos)
@@ -88,7 +94,7 @@ if __name__ == "__main__":
                 if t_vec is not None and r_vec is not None:
                     positions.append(dkt_pos[:3])
                     rotations.append(dkt_pos[-3:])
-                    cv2.imwrite(f"images/hand2eye/{x}_{y}_{z}.png", img44)
+                    cv2.imwrite(f"images/hand2eye/{dkt_pos}.png", img44)
                     cam_r.append(r_vec)
                     cam_t.append(t_vec)
                     
