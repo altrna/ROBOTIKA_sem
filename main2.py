@@ -115,8 +115,10 @@ if __name__ == "__main__":
     camt = np.load("Cam_T.npz")["arr_0"].flatten()
     print(camr, camt)
     base2cam = SE3(camt, SO3(camr))
+    print(base2cam)
     cp = get_arucos_pose(camera, cam_matrix, dist_matrix, base2cam)
     for i in range(len(cp)):
-        pick_up(cmd, cp[i])
-        move_to_pos(cmd, [400, -150, 150, 0, 90, 0])
-        release(cmd)
+        print(cp[i])
+        #pick_up(cmd, cp[i])
+        #move_to_pos(cmd, [0, -400, 150, 0, 90, 0])
+        #release(cmd)
