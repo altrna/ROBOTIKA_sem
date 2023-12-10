@@ -12,12 +12,12 @@ CAM_MATRIX = np.array([  1.31600325e-01 , -2.13500794e+00 , -3.13652860e-02,   1
 
 pos_r = [
     (SO3.rz(np.deg2rad(i.flatten())[0]) * SO3.ry(np.deg2rad(i.flatten())[1]) * SO3.rx(np.deg2rad(i.flatten())[2])).rot
-    for i in np.load("posr.npz", allow_pickle=True)["arr_0"]
+    for i in np.load("data/posr.npz", allow_pickle=True)["arr_0"]
 ]
-pos_t = [i.flatten() for i in np.load("post.npz", allow_pickle=True)["arr_0"]]
+pos_t = [i.flatten() for i in np.load("data/post.npz", allow_pickle=True)["arr_0"]]
 
-cam_t = [i.flatten() for i in np.load("cam_t_vec.npz", allow_pickle=True)["arr_0"]]
-cam_r = [i.flatten() for i in np.load("cam_r_vec.npz", allow_pickle=True)["arr_0"]]
+cam_t = [i.flatten() for i in np.load("data/cam_t_vec.npz", allow_pickle=True)["arr_0"]]
+cam_r = [i.flatten() for i in np.load("data/cam_r_vec.npz", allow_pickle=True)["arr_0"]]
 
 images = glob.glob("./images/hand2eye/*.png")
 
