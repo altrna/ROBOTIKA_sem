@@ -29,7 +29,6 @@ class SO3:
         """Compute SO3 transformation from a given rotation vector, i.e. exponential
         representation of the rotation."""
         v = np.asarray(rot_vector)
-        print("shape exp: ", np.shape(v))
         assert v.shape == (3,)
         angle = np.linalg.norm(v)
         v_ = v/angle if angle != 0 else v
@@ -104,7 +103,6 @@ class SO3:
         angle, axis = self.to_angle_axis()
         qw = np.array([np.cos(angle/2)])
         qxyz = axis*np.sin(angle/2)
-        print(qxyz, qw)
         return np.concatenate((qxyz, qw), axis=0)
 
     @staticmethod
