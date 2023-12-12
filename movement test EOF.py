@@ -52,14 +52,15 @@ if __name__ == "__main__":
 	robot = robCRS97()
 	cmd = Commander(robot)
 	cmd.open_comm("/dev/ttyUSB0")
-	cmd.init()
+	cmd.init(hard_home=False)
+	cmd.soft_home()
 	prev_irc = None
 	positions = []
 	rotations = []
 	cam_r = []
 	cam_t = []
-	phi_z = 0
-	pos = np.array([500, 0, 500, 0, 0 ,phi_z])
+	phi_x = 45
+	pos = np.array([500, 0, 500, phi_x, 0 ,0])
 	irc = None
 	try:
 		irc = cmd.find_closest_ikt(pos)
