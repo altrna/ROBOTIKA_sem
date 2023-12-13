@@ -99,15 +99,15 @@ def sort_layers(all_arucos):
 
 
 def main_init(cmd, camera, cam_matrix, dist_matrix, base2cam):
-    move_to_pos(cmd, [0,0,0,0,0,0])
+    move_to_pos(cmd, [0, 0, 0, 0, 0, 0])
     sort_dict = {}
     boxes = []
     arucos = get_arucos_pose(camera, cam_matrix, dist_matrix, base2cam)
     for aruco in arucos:
-        if aruco.layer==-1:
+        if aruco.layer == -1:
             boxes.append(aruco)
     for aruco in arucos:
-        if aruco.layer>=0 and aruco.id not in sort_dict:
+        if aruco.layer >= 0 and aruco.id not in sort_dict:
             if boxes != []:
                 sort_dict[aruco.id] = boxes[0]
                 boxes = boxes[1:]
@@ -115,6 +115,7 @@ def main_init(cmd, camera, cam_matrix, dist_matrix, base2cam):
                 print("Not enough boxes for cubes")
                 return {}
     return sort_dict
+
 
 def main_logic():
     pass
@@ -144,8 +145,8 @@ if __name__ == "__main__":
 
     dist_matrix = np.array([-6.60263309e-02, -4.23421181e-01, -1.32225502e-02, 1.26508906e-03, 2.59213104e00])
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
-    camr = np.load("Cam_R.npz")["arr_0"]
-    camt = np.load("Cam_T.npz")["arr_0"].flatten()
+    camr = np.load("data/Cam_R.npz")["arr_0"]
+    camt = np.load("data/Cam_T.npz")["arr_0"].flatten()
     print(camr, camt)
     base2cam = SE3(camt, SO3(camr))
     print(base2cam)
