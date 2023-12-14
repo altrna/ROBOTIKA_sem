@@ -76,28 +76,49 @@ def get_cube_angle_from_layer(all_arucos_in_layer):
         return all_arucos_in_layer
 
     layer_distance_matrix = get_distance_from_other_arucos(all_arucos_in_layer)
-    idx_mask_sum = np.sum(layer_distance_matrix <= 59.5, axis=0)
+    idx_mask_sum = np.sum(layer_distance_matrix <= 70, axis=0)
     print(layer_distance_matrix)
     for i in range(len(idx_mask_sum)):  
-        if idx_mask_sum[i] > 2:
-            # Assign grab angle in another iteration
-            all_arucos_in_layer[i].angle = None
-            continue
-        closest_aruco = all_arucos_in_layer[np.argsort(layer_distance_matrix[i])[1]]
         current_aruco = all_arucos_in_layer[i]
-        # translation from current cube to the closest cube
-        translation = (current_aruco.SE3.inverse() * closest_aruco.SE3).translation[:2]
-        x_vec = np.array([1, 0])  # grab vector
-        t_0 = translation / np.linalg.norm(translation)
-        dot_product = np.dot(t_0, x_vec)
-
-        # cube Rz angle
         angle = np.rad2deg(np.arctan2(current_aruco.SE3.rotation.rot[1, 0], current_aruco.SE3.rotation.rot[0, 0]))
+        if idx_mask_sum[i] > 2:
+            orientation = []
+            for j in range(0, len(idx_mask_sum)):
+                if layer_distance_matrix[i][j] <=70:
+                    if i == j:
+                        continue
+                    closest_aruco = all_arucos_in_layer[j]
+                    translation = (current_aruco.SE3.inverse() * closest_aruco.SE3).translation[:2]
+                    x_vec = np.array([1, 0])  # grab vector
+                    t_0 = translation / np.linalg.norm(translation)
+                    dot_product = np.dot(t_0, x_vec)
+                    orientation.append(abs(dot_product) < 0.68)
+                    if abs(abs(dot_product) - 0.705) < 0.15:
+                        angle = None
+                        break
+            else:
+                if all(orientation):
+                    angle += 90
+                elif all([not i for i in orientation]):
+                    pass
+                else:
+                    angle = None
+            all_arucos_in_layer[i].angle = angle
+        else:
+            closest_aruco = all_arucos_in_layer[np.argsort(layer_distance_matrix[i])[1]]
+            # translation from current cube to the closest cube
+            translation = (current_aruco.SE3.inverse() * closest_aruco.SE3).translation[:2]
+            x_vec = np.array([1, 0])  # grab vector
+            t_0 = translation / np.linalg.norm(translation)
+            dot_product = np.dot(t_0, x_vec)
 
-        angle += 90 if abs(dot_product) < 0.68 else 0  # 70 deg
-        all_arucos_in_layer[i].angle = angle
+            # cube Rz angle
+            angle = np.rad2deg(np.arctan2(current_aruco.SE3.rotation.rot[1, 0], current_aruco.SE3.rotation.rot[0, 0]))
+            angle += 90 if abs(dot_product) < 0.68 else 0  # 70 deg
+            if abs(abs(dot_product) - 0.705) < 0.15:
+                angle = None
+            all_arucos_in_layer[i].angle = angle
 
-        # print(all_arucos_in_layer[i].angle)
     layer_distance_vector = np.sum(layer_distance_matrix , axis = 0)
     cube_order_distance = np.argsort(layer_distance_vector)
     cube_order_distance = np.flip(cube_order_distance, axis = 0)

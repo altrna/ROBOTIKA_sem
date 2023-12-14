@@ -12,7 +12,7 @@ from aruco_utilities import *
 def main():
     # TODO když nemá řešení break cyklu
     # def has_solution ...
-    robot = Manipulator(homing=True)
+    robot = Manipulator(homing=False)
     boxes_dict, boxes = robot.target_init()
     if boxes is None:
         print("INFO: No visible boxes, terminating program")
@@ -20,6 +20,8 @@ def main():
     all_sorted = False
     while not all_sorted:
         arucos = robot.get_arucos_pose()
+        print(arucos)
+
         if len(arucos) == 0:
             print("No visible aruco")
             all_sorted = True
@@ -35,8 +37,6 @@ def main():
             all_sorted = True
             break
         arucos = not_solved_arucos        
-        print("-----------------------------------")
-        print(arucos)
         layer_dict, layer_order = get_layers_in_order(arucos)
         max_layer = layer_order[0]
         for l in range(len(layer_order)):
@@ -53,24 +53,25 @@ def main():
             break
 
         print("Pick up start")
-        cube = cube_order[0]
-        if cube.angle is not None: #and not is_sorted(cube, boxes_dict):
-            if robot.pick_up(cube, max_layer):
-                if cube.id in boxes_dict:
-                    robot.place_in_box(boxes_dict[cube.id])
-                else:
-                    # cube ID not assigned to any box
-                    boxes.sort(key=lambda obj: obj.assigned_amount)
-                    boxes[0].append(cube.id)
-                    boxes_dict[cube.id] = boxes[0]
-                    robot.place_in_box(boxes_dict[cube.id])
-            else: # No IKT
-                print("INFO: Solvable, but no IKT.")
-                robot.home()
-                print("INFO: Terminating program.")
-                return
-        else:
-            continue
+        for cube in cube_order:
+            if cube.angle is not None: #and not is_sorted(cube, boxes_dict):
+                if robot.pick_up(cube, max_layer):
+                    if cube.id in boxes_dict:
+                        robot.place_in_box(boxes_dict[cube.id])
+                    else:
+                        # cube ID not assigned to any box
+                        boxes.sort(key=lambda obj: obj.assigned_amount)
+                        boxes[0].append(cube.id)
+                        boxes_dict[cube.id] = boxes[0]
+                        robot.place_in_box(boxes_dict[cube.id])
+                    
+                else: # No IKT
+                    print("INFO: Solvable, but no IKT.")
+                    robot.home()
+                    print("INFO: Terminating program.")
+                    return
+            else:
+                continue
     robot.home()
 
 def is_sorted(cube: Aruco, boxes_dict):
