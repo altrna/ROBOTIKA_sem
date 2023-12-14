@@ -22,8 +22,11 @@ class Manipulator:
         self.cmd = Commander(self.robot)
         self.cmd.open_comm("/dev/ttyUSB0", speed=19200)
 
-        self.cmd.init(hard_home=homing)
+        self.cmd.init(hard_home=False)
         self.cmd.soft_home()
+        if homing:
+            self.cmd.hard_home()
+            self.cmd.soft_home()
 
         # set camera
         self.bus = PyCapture2.BusManager()
@@ -44,11 +47,10 @@ class Manipulator:
         camt = np.load("data/base2cam_T.npz")["arr_0"]
         self.base2cam = SE3(camt, SO3(camr))
 
-    def home(self, hard_home) -> None:
-        self.cmd.init(hard_home=hard_home)
+    def home(self) -> None:
         self.cmd.soft_home()
 
-    def get_arucos_pose(self) -> list[Aruco]:
+    def get_arucos_pose(self):
         """
         Returns list of objects Aruco containing SE3 and ID
 
@@ -56,12 +58,15 @@ class Manipulator:
             list[Aruco]: List of all visible arucos
         """
         # Move EOF to capture image
-        irc = self.cmd.anglestoirc([0, 0, 0, 0, 0, 0])
+        _, irc = self.cmd.axis_get_pos()
+        angles = self.cmd.irctoangles(irc)
+        angles[0] = 25
+        irc = self.cmd.anglestoirc(angles)
         self.cmd.coordmv(irc)
         self.cmd.wait_ready()
 
         image = self.camera.retrieveBuffer()
-        image = self.image.convert(PyCapture2.PIXEL_FORMAT.RGB8)
+        image = image.convert(PyCapture2.PIXEL_FORMAT.RGB8)
 
         rgb_cv_image = np.array(image.getData(), dtype="uint8").reshape((image.getRows(), image.getCols(), 3))
         gray_cv_image = cv2.cvtColor(rgb_cv_image, cv2.COLOR_BGR2GRAY)
@@ -71,6 +76,9 @@ class Manipulator:
             thresh, self.aruco_dict, parameters=self.aruco_params
         )
         r_vec, t_vec = cv2.aruco.estimatePoseSingleMarkers(corners, 39.5, self.camera_matrix, self.distortion_matrix)
+
+        if r_vec is None:
+            return []
         l = np.shape(r_vec)[0]
         arucos = []
         for i in range(l):
@@ -79,7 +87,7 @@ class Manipulator:
             arucos.append(Aruco(base2aruco, ids[i][0]))
         return arucos
 
-    def move_to_pos(self, des_pos: list[float]) -> bool:
+    def move_to_pos(self, des_pos):
         """Move effector to desired position
 
         Args:
@@ -89,6 +97,10 @@ class Manipulator:
             bool: True if motion was executed successfully
         """
         try:
+            #print("Desired position", des_pos)
+            des_pos = np.array(des_pos)
+            des_pos[0:2] += np.array([0, 0])
+
             irc = self.cmd.find_closest_ikt(des_pos)
         except:
             irc = None
@@ -100,7 +112,7 @@ class Manipulator:
             print("ERROR: No IKT!")
             return False
 
-    def release(self) -> None:
+    def release(self):
         """
         Release gripper
         """
@@ -114,34 +126,40 @@ class Manipulator:
         robCRSgripper(self.cmd, 0.1)
         self.cmd.wait_gripper_ready()
 
-    def pick_up(self, cube: Aruco) -> None:
+    def pick_up(self, cube, max_layer):
         """
         Pick up cube
 
         Args:
             cube (Aruco): Target cube
         """
-        print(f"Picking cube at {cube.SE3.translation[0:2]} in layer {cube.layer}")
-        cube.SE3.translation[2] = 50 * (cube.layer + 2.5)
+        print(f"Picking cube at {cube.SE3.translation[0:2]} in layer {cube.layer}, Z = {cube.SE3.translation[2]}")
+        cube.SE3.translation[2] = 50 * (max_layer+ 2.5)
         yaw = cube.angle
         des_pos = [*cube.SE3.translation, yaw, 90, 0]
-        self.move_to_pos(des_pos)
+        if not self.move_to_pos(des_pos):
+            return False
         self.release()
 
         des_pos[2] = 50 * (cube.layer + 1)
-        self.move_to_pos(des_pos)
+        if not self.move_to_pos(des_pos):
+            return False
+
         self.grip()
 
-        des_pos[2] = 50 * (cube.layer + 2.5)
-        self.move_to_pos(des_pos)
+        des_pos[2] = 50 * (max_layer + 2.5)
+        if not self.move_to_pos(des_pos):
+            return False
+        return True
 
-    def place_in_box(self, box: Box):
+    def place_in_box(self, box):
         """
         Place cube in box
 
         Args:
             box (Box): Target box
         """
+        print("Place in box")
         des_pos = [*box.SE3.translation, 0, 90, 0]
         ikt_found = self.move_to_pos(des_pos)
         if not ikt_found:
@@ -150,7 +168,7 @@ class Manipulator:
             self.cmd.wait_ready()
         self.release()
 
-    def target_init(self) -> (dict, list[Box]):
+    def target_init(self):
         """Assign cube ID to boxes
 
         Returns:
@@ -160,11 +178,12 @@ class Manipulator:
         # assign cube IDs to SE3 of the box
         sort_dict = {}
         boxes = []
-        arucos = self.get_arucos_pose(self.cmd, self.camera, self.camera_matrix, self.distortion_matrix, self.base2cam)
+        arucos = self.get_arucos_pose()
         for aruco in arucos:
             if aruco.layer == -1:
                 boxes.append(Box(aruco.SE3, aruco.id))
-
+        if boxes == []:
+            return None, None
         for aruco in arucos:
             if aruco.layer >= 0 and aruco.id not in sort_dict.keys():
                 boxes.sort(key=lambda obj: obj.assigned_amount)
@@ -172,7 +191,7 @@ class Manipulator:
                 sort_dict[aruco.id] = boxes[0]  # box with least assigned cubes
         return sort_dict, boxes
 
-    def find_ikt_no_angle(self, des_pos: list[float]) -> None:
+    def find_ikt_no_angle(self, des_pos):
         """
         Find config for position regardless of angle
 
@@ -182,6 +201,7 @@ class Manipulator:
         Raises:
             Exception: Position is unreachable
         """
+        print("Move to regardless of angle")
         z = np.linspace(-70, 70, 40)
         y = np.linspace(20, 90, 20)
         x = np.linspace(-70, 70, 40)

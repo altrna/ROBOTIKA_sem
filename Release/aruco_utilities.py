@@ -4,7 +4,7 @@ from core.se3 import *
 from core.aruco import *
 
 
-def get_distance_from_other_arucos(all_arucos_in_layer: list[Aruco]) -> np.ndarray:
+def get_distance_from_other_arucos(all_arucos_in_layer):
     """
     Retruns matrix of distances from each cube in layer
 
@@ -19,7 +19,7 @@ def get_distance_from_other_arucos(all_arucos_in_layer: list[Aruco]) -> np.ndarr
     return dist_mat
 
 
-def sort_layers(arucos: list[Aruco]) -> dict:
+def sort_layers(arucos):
     """
     Returns dictionary containing layers and corresponding arucos in layer
 
@@ -39,7 +39,7 @@ def sort_layers(arucos: list[Aruco]) -> dict:
     return layer_dict
 
 
-def get_layers_in_order(all_arucos: list[Aruco]) -> (dict, list):
+def get_layers_in_order(all_arucos):
     """
     Returns dictionary containing layers and corresponding arucos in layer and sorted list of layers
 
@@ -50,6 +50,7 @@ def get_layers_in_order(all_arucos: list[Aruco]) -> (dict, list):
         dict: Dictionary containing layers as keys and corresponding arucos in layer without layer -1 (box)
         kwargs: Sorted list of layers
     """
+    
     layer_dict = sort_layers(all_arucos)
     kwargs = list(layer_dict.keys())
     kwargs.sort(reverse=True)
@@ -58,27 +59,29 @@ def get_layers_in_order(all_arucos: list[Aruco]) -> (dict, list):
     return layer_dict, kwargs
 
 
-def get_cube_angle_from_layer(all_arucos_in_layer: list[Aruco]) -> None:
+def get_cube_angle_from_layer(all_arucos_in_layer):
     """Assign a grab angle for each visible aruco certain layer
 
     Args:
         all_arucos_in_layer (list[Aruco]): List of all arucos in layer
+    Returns:
+        List[Aruco]: List of cubes sorted by distances from other cubes
     """
 
     if len(all_arucos_in_layer) == 1:
         angle = np.rad2deg(
             np.arctan2(all_arucos_in_layer[0].SE3.rotation.rot[1, 0], all_arucos_in_layer[0].SE3.rotation.rot[0, 0])
         )
-        all_arucos_in_layer[0].grab_angle(angle)
-        return
+        all_arucos_in_layer[0].angle = angle
+        return all_arucos_in_layer
 
     layer_distance_matrix = get_distance_from_other_arucos(all_arucos_in_layer)
-    idx_mask_sum = np.sum(layer_distance_matrix <= 65, axis=0)
-    for i in range(len(idx_mask_sum)):
+    idx_mask_sum = np.sum(layer_distance_matrix <= 59.5, axis=0)
+    print(layer_distance_matrix)
+    for i in range(len(idx_mask_sum)):  
         if idx_mask_sum[i] > 2:
             # Assign grab angle in another iteration
-            all_arucos_in_layer[i].grab_angle(None)
-            # TODO nemozna reseni
+            all_arucos_in_layer[i].angle = None
             continue
         closest_aruco = all_arucos_in_layer[np.argsort(layer_distance_matrix[i])[1]]
         current_aruco = all_arucos_in_layer[i]
@@ -91,7 +94,17 @@ def get_cube_angle_from_layer(all_arucos_in_layer: list[Aruco]) -> None:
         # cube Rz angle
         angle = np.rad2deg(np.arctan2(current_aruco.SE3.rotation.rot[1, 0], current_aruco.SE3.rotation.rot[0, 0]))
 
-        angle += 90 if abs(dot_product) < 0.35 else 0  # 0.35 ~ 70 deg
+        angle += 90 if abs(dot_product) < 0.68 else 0  # 70 deg
         all_arucos_in_layer[i].angle = angle
 
         # print(all_arucos_in_layer[i].angle)
+    layer_distance_vector = np.sum(layer_distance_matrix , axis = 0)
+    cube_order_distance = np.argsort(layer_distance_vector)
+    cube_order_distance = np.flip(cube_order_distance, axis = 0)
+    sorted_cubes = [all_arucos_in_layer[i] for i in cube_order_distance]
+    return sorted_cubes
+ 
+
+
+
+
