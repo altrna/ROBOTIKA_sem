@@ -10,8 +10,6 @@ from aruco_utilities import *
 
 
 def main():
-    # TODO když nemá řešení break cyklu
-    # def has_solution ...
     robot = Manipulator(homing=False)
     boxes_dict, boxes = robot.target_init()
     if boxes is None:
@@ -20,7 +18,6 @@ def main():
     all_sorted = False
     while not all_sorted:
         arucos = robot.get_arucos_pose()
-        print(arucos)
 
         if len(arucos) == 0:
             print("No visible aruco")

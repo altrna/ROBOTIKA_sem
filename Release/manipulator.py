@@ -82,8 +82,11 @@ class Manipulator:
         l = np.shape(r_vec)[0]
         arucos = []
         for i in range(l):
+            
             cam2aruco = SE3(t_vec[i].flatten(), SO3.exp(r_vec[i].flatten()))
             base2aruco = self.base2cam * cam2aruco
+            if base2aruco.translation[2]<-50:
+                continue
             arucos.append(Aruco(base2aruco, ids[i][0]))
         return arucos
 
@@ -97,7 +100,6 @@ class Manipulator:
             bool: True if motion was executed successfully
         """
         try:
-            #print("Desired position", des_pos)
             des_pos = np.array(des_pos)
             des_pos[0:2] += np.array([0, 0])
 
@@ -110,6 +112,7 @@ class Manipulator:
             return True
         else:
             print("ERROR: No IKT!")
+            print("Desired position", des_pos[:3])
             return False
 
     def release(self):
