@@ -1,7 +1,7 @@
 class Box:
     def __init__(self, SE3, aruco_id):
         self.SE3 = SE3
-        self.SE3.transformation[2] = 150
+        self.SE3.translation[2] = 250# 125
         self.id = aruco_id
         self.assigned_amount = 0
         self.assigned_ids = []
