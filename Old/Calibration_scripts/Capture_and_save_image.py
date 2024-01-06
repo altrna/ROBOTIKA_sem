@@ -29,7 +29,7 @@ while True:
   ret, thresh = cv2.threshold(gray_cv_image, 80, 255, 0)
 	
   corners, ids, rejected_im_points = cv2.aruco.detectMarkers(thresh, aruco_dict,parameters = params)
-  #rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
+  rgb_cv_image = cv2.aruco.drawDetectedMarkers(rgb_cv_image, corners = corners, ids=ids, borderColor=(0, 255, 255))
   print(corners, "\n")
 
   # Convert RGB image to BGR image to be shown by OpenCV
