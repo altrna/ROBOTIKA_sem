@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.12) (preloaded format=pdflatex 2024.1.2)  8 JAN 2024 19:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.12) (preloaded format=pdflatex 2024.1.2)  8 JAN 2024 22:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -615,7 +615,8 @@ LaTeX Info: Redefining \today on input line 736.
 \dt@b=\toks36
 )
 Package hyperref Info: Option `colorlinks' set `true' on input line 33.
- (main.aux)
+
+No file main.aux.
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
@@ -636,7 +637,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 34.
 LaTeX Font Info:    ... okay on input line 34.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 34.
 LaTeX Font Info:    ... okay on input line 34.
- (C:\Users\evilw\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+(C:\Users\evilw\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count358
 \scratchdimen=\dimen198
@@ -890,14 +891,18 @@ Package xcolor Warning: Incompatible color definition on input line 183.
 Overfull \vbox (5.0pt too high) has occurred while \output is active []
 
  [2 <./images/Hand2eye.png (PNG copy)> <./flowchart_cropped.pdf>]
-
-Package xcolor Warning: Incompatible color definition on input line 189.
-
-
-Package xcolor Warning: Incompatible color definition on input line 195.
+Underfull \hbox (badness 1454) in paragraph at lines 184--187
+\OT1/ptm/m/n/10 Vzd[]alenost 100 mm jsme zvo-lili d[]^^Pky p[]redem zn[]am[]ym
+ []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 196--198
+Package xcolor Warning: Incompatible color definition on input line 191.
+
+
+Package xcolor Warning: Incompatible color definition on input line 197.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 198--200
 
  []
 
@@ -907,37 +912,37 @@ pdfTeX warning: pdflatex (file ./images/neuchopitelna.pdf): PDF inclusion: found
 <images/neuchopitelna.pdf, id=71, 296.66434pt x 297.72028pt>
 File: images/neuchopitelna.pdf Graphic file (type pdf)
 <use images/neuchopitelna.pdf>
-Package pdftex.def Info: images/neuchopitelna.pdf  used on input line 225.
+Package pdftex.def Info: images/neuchopitelna.pdf  used on input line 227.
 (pdftex.def)             Requested size: 201.60077pt x 202.3199pt.
 
-Package xcolor Warning: Incompatible color definition on input line 226.
+Package xcolor Warning: Incompatible color definition on input line 228.
 
 
-Package xcolor Warning: Incompatible color definition on input line 226.
+Package xcolor Warning: Incompatible color definition on input line 228.
 
 
-Package xcolor Warning: Incompatible color definition on input line 226.
+Package xcolor Warning: Incompatible color definition on input line 228.
 
 
-Package xcolor Warning: Incompatible color definition on input line 226.
+Package xcolor Warning: Incompatible color definition on input line 228.
 
 
-Underfull \hbox (badness 3780) in paragraph at lines 204--229
+Underfull \hbox (badness 3780) in paragraph at lines 206--231
 \OT1/ptm/m/n/10 Pokud na [][]matici vzd[]alenost[]^^P[][] provedeme sumaci []r[]adk[]u
  []
 
 
-Underfull \hbox (badness 1603) in paragraph at lines 204--229
+Underfull \hbox (badness 1603) in paragraph at lines 206--231
 \OT1/ptm/m/n/10 (nebo sloupc[]u, mat-ice je sy-met-rick[]a), dostaneme sou[]cet
  []
 
 
-Underfull \hbox (badness 1577) in paragraph at lines 204--229
+Underfull \hbox (badness 1577) in paragraph at lines 206--231
 \OT1/ptm/m/n/10 budeme t[]r[]^^Pdit pr[]av[]e po-dle to-hoto krit[]eria. Budeme br[]at
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 204--229
+Underfull \hbox (badness 10000) in paragraph at lines 206--231
 
  []
 
@@ -947,28 +952,28 @@ pdfTeX warning: pdflatex (file ./images/scalar.pdf): PDF inclusion: found PDF ve
 <images/scalar.pdf, id=72, 452.91508pt x 286.10689pt>
 File: images/scalar.pdf Graphic file (type pdf)
 <use images/scalar.pdf>
-Package pdftex.def Info: images/scalar.pdf  used on input line 233.
+Package pdftex.def Info: images/scalar.pdf  used on input line 235.
 (pdftex.def)             Requested size: 252.0pt x 159.18846pt.
 
-Package xcolor Warning: Incompatible color definition on input line 235.
+Package xcolor Warning: Incompatible color definition on input line 237.
 
 
-Package xcolor Warning: Incompatible color definition on input line 235.
+Package xcolor Warning: Incompatible color definition on input line 237.
 
 
-Package xcolor Warning: Incompatible color definition on input line 235.
+Package xcolor Warning: Incompatible color definition on input line 237.
 
 
-Package xcolor Warning: Incompatible color definition on input line 235.
+Package xcolor Warning: Incompatible color definition on input line 237.
 
 
-c:/Users/evilw/Desktop/ROBOTIKA_sem/dokumentace/main.tex:238: LaTeX Error: There's no line here to end.
+c:/Users/evilw/Desktop/ROBOTIKA_sem/dokumentace/main.tex:240: LaTeX Error: There's no line here to end.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.238 
+l.240 
       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -980,68 +985,68 @@ pdfTeX warning: pdflatex (file ./aruco_geometry_cropped.pdf): PDF inclusion: fou
 <aruco_geometry_cropped.pdf, id=73, 427.57744pt x 427.57744pt>
 File: aruco_geometry_cropped.pdf Graphic file (type pdf)
 <use aruco_geometry_cropped.pdf>
-Package pdftex.def Info: aruco_geometry_cropped.pdf  used on input line 242.
+Package pdftex.def Info: aruco_geometry_cropped.pdf  used on input line 244.
 (pdftex.def)             Requested size: 201.60077pt x 201.6008pt.
 
-Package xcolor Warning: Incompatible color definition on input line 243.
+Package xcolor Warning: Incompatible color definition on input line 245.
 
 
-Package xcolor Warning: Incompatible color definition on input line 243.
+Package xcolor Warning: Incompatible color definition on input line 245.
 
 
-Package xcolor Warning: Incompatible color definition on input line 243.
+Package xcolor Warning: Incompatible color definition on input line 245.
 
 
-Package xcolor Warning: Incompatible color definition on input line 243.
+Package xcolor Warning: Incompatible color definition on input line 245.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Package xcolor Warning: Incompatible color definition on input line 247.
+Package xcolor Warning: Incompatible color definition on input line 249.
 
 
-Package xcolor Warning: Incompatible color definition on input line 257.
+Package xcolor Warning: Incompatible color definition on input line 249.
 
 
 Overfull \vbox (5.0pt too high) has occurred while \output is active []
 
  [3 <./images/neuchopitelna.pdf> <./images/scalar.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 258.
+Package xcolor Warning: Incompatible color definition on input line 260.
 
 
-Package xcolor Warning: Incompatible color definition on input line 259.
+Package xcolor Warning: Incompatible color definition on input line 261.
 
 
-Package xcolor Warning: Incompatible color definition on input line 269.
+Package xcolor Warning: Incompatible color definition on input line 271.
 
 
-Package xcolor Warning: Incompatible color definition on input line 270.
+Package xcolor Warning: Incompatible color definition on input line 272.
 
 
-Underfull \hbox (badness 2189) in paragraph at lines 271--278
+Underfull \hbox (badness 2189) in paragraph at lines 273--280
 []\OT1/ptm/m/n/10 P[]uvodn[]e byla v n[]avrhu []re[]sen[]^^P pro opu[]st[]en[]^^P zorn[]eho
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 271--278
+Underfull \hbox (badness 10000) in paragraph at lines 273--280
 []\OT1/ptm/m/n/10 uhlu kamery p[]ri fo-cen[]^^P pou[]zita poloha kloub[]u
  []
 
 
-Underfull \hbox (badness 6268) in paragraph at lines 271--278
+Underfull \hbox (badness 6268) in paragraph at lines 273--280
 []$\OT1/ptm/m/n/10 , za []u[]celem rychlosti []re[]sen[]^^P byla
  []
 
 
-Package xcolor Warning: Incompatible color definition on input line 279.
+Package xcolor Warning: Incompatible color definition on input line 281.
 
 
-Package xcolor Warning: Incompatible color definition on input line 287.
+Package xcolor Warning: Incompatible color definition on input line 289.
 
 
-Package xcolor Warning: Incompatible color definition on input line 299.
+Package xcolor Warning: Incompatible color definition on input line 301.
 
 
 Overfull \vbox (5.0pt too high) has occurred while \output is active []
@@ -1065,15 +1070,15 @@ Package rerunfilecheck Info: Checksums for `main.out':
 (rerunfilecheck)             After:  7502C740887A4C604635BFB485427DFF;3269.
  ) 
 Here is how much of TeX's memory you used:
- 16521 strings out of 474495
- 284829 string characters out of 5743936
+ 16523 strings out of 474495
+ 284798 string characters out of 5743936
  1966460 words of memory out of 5000000
- 38448 multiletter control sequences out of 15000+600000
- 608736 words of font info for 120 fonts, out of 8000000 for 9000
+ 38450 multiletter control sequences out of 15000+600000
+ 609641 words of font info for 123 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 94i,19n,93p,1095b,529s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 94i,19n,93p,1095b,531s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvbo8a.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/evilw/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (4 pages, 4391736 bytes).
+Output written on main.pdf (4 pages, 4391673 bytes).
 PDF statistics:
  193 PDF objects out of 1000 (max. 8388607)
  42 named destinations out of 1000 (max. 500000)

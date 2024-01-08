@@ -51,7 +51,7 @@
 \section{Zadání úlohy}
 V pracovním prostoru robota CRS A465 jsou rozmístěny kostky o konstantní velikosti označené % CRS97 -> CRS A465
 značkami typu \textit{Aruco}. Robot je umístěn v kleci, která vymezuje jeho pracovní prostor. %  na konstantním místě -> staticky
-Ke kleci je staticky připevněna kamera, která snímá část pracovního prostoru. %zabírá stále stejnou scénu -> snímá část pracovního prostoru + odstranit tu část o pozici kamery/nebo rozdělit na 2 věty
+Ke kleci je staticky připevněna kamera, která snímá část pracovního prostoru. %zabírá stále stejnou scénu -> snímá část pracovního prostoru + odstranit tu část o pozici kamery
 V pracovní scéně umístěny krabice, % vymazat "zároveň jsou"
 které slouží k uložení kostek. Úkolem je správně roztřídit kostky s \textit{Aruco} %Naším úkolem je -> úkolem je správně 
 značkami tak, aby kostky označené stejnými značkami byly uloženy na stejném místě (do stejné krabice).
@@ -181,9 +181,11 @@ Všechny další kostky se stejným id budou přiřazeny do stejné krabice. % t
 % Přiřazení id krabice k id kostky je čistě náhodné. % smazat tuto větu -> zní blbě když mámě něco "náhodně" pokud to není přímo účelem
 Po určení id krabic se uloží jejich pozice vůči bázi robota a kostky, jež do dané krabice patří se přesouvají na příslušné \textit{(x, y)} souřadnice.
 
-Aby se předešlo detekci již roztříděných kostek v % možná toto celé přepsat ve stylu "měří se rovinné vzdálenosti kostky od krabíce" místo "pomyslný kruh"
-krabicích, vytvoří se kolem původní polohy pomyslný kruh se středem v id krabice a poloměrem 10 cm v rovině \textit{xy}. Pokud souřadnice \textit{(x, y)}
-některé nově detekované značky leží uvnitř jednoho z těchto kruhů, nebude znovu tříděna. Poloměr 10 cm jsme zvolili díky předem známému rozměru krabic.
+Způsob, jak se předchází detekci již roztříděných kostek, řešíme měřením jejich vzdáleností v rovině \textit{xy} od jejich přiřazených krabic.
+Je-li vzdálenost kostky od její přiřazené krabice menší než 100 mm, označuje program kostku jako roztříděnou a algoritmus pokračuje s další nalezenou kostkou.
+Vzdálenost 100 mm jsme zvolili díky předem známým rozmerům krabice
+
+
 
 
 \subsection{Třídění podle vrstev}
